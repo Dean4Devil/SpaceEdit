@@ -4,7 +4,8 @@ import SectorObjects
 class FileEngineer():
 
     def __init__(self):
-        self.ship_list = []
+        self.ship_list = {}
+        self.id_list = []
         
     def parse_file(self, filename):
         tree = ET.parse(filename)
@@ -34,8 +35,11 @@ class FileEngineer():
                     ship_dict.update({obj.tag: blocks})
                 else:
                     ship_dict.update({obj.tag: obj.text})
-            self.ship_list.append(ship_dict)
+            self.id_list.append(ship_dict["EntityId"])
+            self.ship_list.update({ship_dict["EntityId"]: ship_dict})
             
     def return_ship_list(self):
         return self.ship_list   # Makes it easier for multithreading later on
     
+    def return_id_list(self):
+        return self.id_list

@@ -7,6 +7,9 @@ class Block():
     def set_position(self,x,y,z):
         self.x,self.y,self.z = x,y,z
     
+    def set_identifyer(self, ident):
+        self.identifyer = ident
+    
     def move(self,x=0,y=0,z=0):
         self.x += x
         self.y += y
@@ -18,6 +21,9 @@ class Block():
         else:
             self.entity_id = eid
             return True
+        
+    def return_type(self):
+        return "Block"
 
 class Object():
     def __init__(self, sid, blocks=[], station=False):
@@ -59,13 +65,18 @@ def create_block_from_xml(element):
                "LargeBlockBeacon": "Beacon",
                "SmallBlockBeacon": "Beacon",}
     blocks = []
+    block = Block(0,0,0)
     if "Armor" in element[0].text:
-        return Block(element[1].attrib["x"], element[1].attrib["y"], element[1].attrib["z"])
+        block.identifyer = element[0].text
+        block.set_position(element[1].attrib["x"], element[1].attrib["y"], element[1].attrib["z"])
+        return block
     else:
-        block = Block(0,0,0)
+        block = Block(0,0,0, options[element[0].text])
+        block.set_identifyer(element[0].text)
         for tag in element:
             if tag.tag == "Min":
                 block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
             if tag.tag == "EntityId":
                 block.set_entity_id(tag.text)
         return block
+    
