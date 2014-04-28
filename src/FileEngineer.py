@@ -5,6 +5,7 @@ class FileEngineer():
 
     def __init__(self):
         self.ship_list = {}
+        self.name_dict = {}
         self.id_list = []
         
     def parse_file(self, filename):
@@ -22,24 +23,35 @@ class FileEngineer():
         
         for sector_object in sector_objects:
             ship_dict = {}
+            EID = ""
             for obj in sector_object:
                 if(obj.tag == "PositionAndOrientation"):
                     pos_and_or = {}
                     for p_o in obj:
                         pos_and_or.update({p_o.tag: p_o.attrib})
                     ship_dict.update({obj.tag: pos_and_or})
+                elif(obj.tag == "EntityId"):
+                    EID = obj.text
+                    ship_dict.update({obj.tag: obj.text})
                 elif(obj.tag == "CubeBlocks"):
                     blocks = []
                     for block in obj:
-                        blocks.append(SectorObjects.create_block_from_xml(block))
+                        xml_block = SectorObjects.create_block_from_xml(block)
+                        blocks.append(xml_block)
                     ship_dict.update({obj.tag: blocks})
                 else:
                     ship_dict.update({obj.tag: obj.text})
-            self.id_list.append(ship_dict["EntityId"])
-            self.ship_list.update({ship_dict["EntityId"]: ship_dict})
+            self.id_list.append(EID)
+            self.ship_list.update({EID: ship_dict})
             
+    def set_ship_name(self, ship_id, ship_name):
+        self.name_dict.update({ship_id: ship_name})
+        
     def return_ship_list(self):
-        return self.ship_list   # Makes it easier for multithreading later on
+        return self.ship_list
+    
+    def return_name_dict(self):
+        return self.name_dict
     
     def return_id_list(self):
         return self.id_list

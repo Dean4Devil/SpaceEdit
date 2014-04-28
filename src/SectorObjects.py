@@ -21,7 +21,7 @@ class Block():
         else:
             self.entity_id = eid
             return True
-        
+
     def return_type(self):
         return "Block"
 
@@ -58,25 +58,116 @@ class Station(Object):
 
 
 def create_block_from_xml(element):
-    options = {"LargeBlockSmallGenerator": "GeneratorSmall",
-               "SmallBlockSmallGenerator": "GeneratorSmall",
-               "LargeBlockLargeGenerator": "GeneratorLarge",
-               "SmallBlockLargeGenerator": "GeneratorLarge",
+    options = {"LargeBlockSmallGenerator": "Small Generator",
+               "SmallBlockSmallGenerator": "Small Generator",
+               "LargeBlockLargeGenerator": "Large Generator",
+               "SmallBlockLargeGenerator": "Large Generator",
                "LargeBlockBeacon": "Beacon",
-               "SmallBlockBeacon": "Beacon",}
-    blocks = []
+               "SmallBlockBeacon": "Beacon",
+               "LargeBlockInteriorWall": "Interior Wall",
+               "LargeRamp": "Ramp",
+               "LargeBlockSmallThrust": "Small Thruster",
+               "SmallBlockSmallThrust": "Small Thruster",
+               "LargeBlockLargeThrust": "Large Thruster",
+               "SmallBlockLargeThrust": "Large Thruster",
+               "LargeBlockGyro": "Gyroscope",
+               "SmallBlockGyro": "Gyroscope",
+               "LargeWindowSquare": "Square Window",
+               "LargeWindowEdge": "WindowEdge",
+               "Window1x1Slope": "WindowSlope",
+               "Window1x1FlatInv": "WindowInv",
+               "LargeSteelCatwalk": "Catwalk",
+               "LargeInteriorPillar": "Pillar",
+               "LargeStairs": "Stairs",
+               "SmallLight": "Interior Light"}
     block = Block(0,0,0)
-    if "Armor" in element[0].text:
-        block.identifyer = element[0].text
-        block.set_position(element[1].attrib["x"], element[1].attrib["y"], element[1].attrib["z"])
-        return block
-    else:
-        block = Block(0,0,0, options[element[0].text])
-        block.set_identifyer(element[0].text)
-        for tag in element:
-            if tag.tag == "Min":
-                block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
-            if tag.tag == "EntityId":
-                block.set_entity_id(tag.text)
-        return block
-    
+    block.set_identifyer("No Identifyer!")
+    block.type = "Unknown"
+    try:
+        if element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_GravityGenerator":
+            block.identifyer = "LargeBlockGravityGenerator"
+            for tag in element:
+                if tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                if tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)
+            return block
+        
+        elif element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_Door":
+            block.identifyer = "LargeBlockDoor"
+            for tag in element:
+                if tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                if tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)
+            return block
+        
+        elif element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_Passage":
+            block.identifyer = "LargeBlockPassage"
+            for tag in element:
+                if tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                if tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)
+            return block
+                    
+        elif element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_LargeGatlingTurret":
+            block.identifyer = "LargeGatlingTurret"
+            for tag in element:
+                if tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                elif tag.tag == "EntityId":
+                    block.set_entity_id(tag.text) 
+            return block 
+        
+        elif element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_SmallGatlingGun":
+            block.identifyer = "SmallGatlingGun"
+            for tag in element:
+                if tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                elif tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)  
+            return block
+        
+        elif element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_LargeMissileTurret":
+            block.identifyer = "LargeMissileTurret"
+            for tag in element:
+                if tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                elif tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)  
+            return block
+        
+        elif element.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_Beacon":
+            for tag in element:
+                if tag.tag == "SubtypeName":
+                    block.identifyer = tag.text
+                elif tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                elif tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)  
+            return block
+                
+        else:
+            for tag in element:
+                if tag.tag == "SubtypeName":
+                    print("Setting unknown type block ident to: ", tag.text, tag.attrib)
+                    block.set_identifyer(tag.text)
+                elif tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                elif tag.tag == "EntityId":
+                    block.set_entity_id(tag.text)
+            return block
+    except:
+        if "Armor" in element[0].text:
+            block.identifyer = element[0].text
+            block.set_position(element[1].attrib["x"], element[1].attrib["y"], element[1].attrib["z"])
+            return block
+        else:
+            print("Except and NOT armor!", element[0].text)
+            for tag in element:
+                if tag.tag == "SubtypeName":
+                    block.set_identifyer(tag.text)
+                elif tag.tag == "Min":
+                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+            return block
