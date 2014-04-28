@@ -1,5 +1,9 @@
+import SpaceEngineerData
+
 class Block():
     x,y,z = 0,0,0
+    name_modifier = ""
+    has_name_modifier = False 
     def __init__(self,x,y,z, btype="Armor"):
         self.x,self.y,self.z = x,y,z
         self.type = btype
@@ -58,28 +62,6 @@ class Station(Object):
 
 
 def create_block_from_xml(element):
-    options = {"LargeBlockSmallGenerator": "Small Generator",
-               "SmallBlockSmallGenerator": "Small Generator",
-               "LargeBlockLargeGenerator": "Large Generator",
-               "SmallBlockLargeGenerator": "Large Generator",
-               "LargeBlockBeacon": "Beacon",
-               "SmallBlockBeacon": "Beacon",
-               "LargeBlockInteriorWall": "Interior Wall",
-               "LargeRamp": "Ramp",
-               "LargeBlockSmallThrust": "Small Thruster",
-               "SmallBlockSmallThrust": "Small Thruster",
-               "LargeBlockLargeThrust": "Large Thruster",
-               "SmallBlockLargeThrust": "Large Thruster",
-               "LargeBlockGyro": "Gyroscope",
-               "SmallBlockGyro": "Gyroscope",
-               "LargeWindowSquare": "Square Window",
-               "LargeWindowEdge": "WindowEdge",
-               "Window1x1Slope": "WindowSlope",
-               "Window1x1FlatInv": "WindowInv",
-               "LargeSteelCatwalk": "Catwalk",
-               "LargeInteriorPillar": "Pillar",
-               "LargeStairs": "Stairs",
-               "SmallLight": "Interior Light"}
     block = Block(0,0,0)
     block.set_identifyer("No Identifyer!")
     block.type = "Unknown"
@@ -145,7 +127,10 @@ def create_block_from_xml(element):
                 elif tag.tag == "Min":
                     block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
                 elif tag.tag == "EntityId":
-                    block.set_entity_id(tag.text)  
+                    block.set_entity_id(tag.text)
+                elif tag.tag == "CustomName":
+                    block.name_modifier = tag.text
+                    block.has_name_modifier = True 
             return block
                 
         else:

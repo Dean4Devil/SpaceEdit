@@ -1,5 +1,6 @@
 import xml.etree.ElementTree as ET
 import SectorObjects
+import SpaceEngineerData
 
 class FileEngineer():
 
@@ -37,21 +38,18 @@ class FileEngineer():
                     blocks = []
                     for block in obj:
                         xml_block = SectorObjects.create_block_from_xml(block)
+                        if xml_block.has_name_modifier:
+                            ship_dict.update({"ship_has_name": True})
+                            ship_dict.update({"ship_name": xml_block.name_modifier})
                         blocks.append(xml_block)
                     ship_dict.update({obj.tag: blocks})
                 else:
                     ship_dict.update({obj.tag: obj.text})
             self.id_list.append(EID)
             self.ship_list.update({EID: ship_dict})
-            
-    def set_ship_name(self, ship_id, ship_name):
-        self.name_dict.update({ship_id: ship_name})
-        
+    
     def return_ship_list(self):
         return self.ship_list
-    
-    def return_name_dict(self):
-        return self.name_dict
     
     def return_id_list(self):
         return self.id_list
