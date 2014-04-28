@@ -17,9 +17,8 @@ class FileEngineer():
                 break
         sector_objects = []
         for myobject in objects:
-            if(myobject.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_CubeGrid"):
+            if(myobject.attrib["{http://www.w3.org/2001/XMLSchema-instance}type"] == "MyObjectBuilder_CubeGrid"):    # Make use of SectorObjects.Object class!
                 sector_objects.append(myobject)
-
         
         for sector_object in sector_objects:
             ship_dict = {}
@@ -43,10 +42,7 @@ class FileEngineer():
                     ship_dict.update({obj.tag: obj.text})
             self.id_list.append(EID)
             self.ship_list.update({EID: ship_dict})
-            
-    def set_ship_name(self, ship_id, ship_name):
-        self.name_dict.update({ship_id: ship_name})
-        
+    
     def return_ship_list(self):
         return self.ship_list
     

@@ -4,9 +4,6 @@ class Block():
         self.x,self.y,self.z = x,y,z
         self.type = btype
     
-    def set_position(self,x,y,z):
-        self.x,self.y,self.z = x,y,z
-    
     def set_identifyer(self, ident):
         self.identifyer = ident
     
@@ -14,7 +11,7 @@ class Block():
         self.x += x
         self.y += y
         self.z += z
-           
+    
     def set_entity_id(self, eid):
         if self.type == "Armor":
             return False
@@ -22,33 +19,25 @@ class Block():
             self.entity_id = eid
             return True
 
-    def return_type(self):
-        return "Block"
-
 class Object():
-    def __init__(self, sid, blocks=[], station=False):
+    self.blocks= []
+    def __init__(self, sid, blocks=[], station=False, tname=""):
         self.id = sid
         self.blocks = blocks
         self.station = station
+	self.name = tname
     
-    def set_blocks(self, blocks):
-        self.blocks = blocks
-        
     def move(self,x=0,y=0,z=0):
         for block in self.blocks:
             block.move(x,y,z)
         return True
-        
-    def delete(self):
-        return True
-        
-    
+
+
 class Ship(Object):
     def __init__(self, sid, blocks=[]):
         Object.__init__(self, sid, blocks=blocks)
-    
-        
-    
+
+
 class Station(Object):
     def __init__(self, sid, blocks=[]):
         Object.__init__(self, sid, blocks=blocks, station=True)
@@ -88,7 +77,9 @@ def create_block_from_xml(element):
             block.identifyer = "LargeBlockGravityGenerator"
             for tag in element:
                 if tag.tag == "Min":
-                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                    block.x = tag.attrib["x"]
+                    block.y = tag.attrib["y"]
+                    block.z = tag.attrib["z"]
                 if tag.tag == "EntityId":
                     block.set_entity_id(tag.text)
             return block
@@ -124,7 +115,9 @@ def create_block_from_xml(element):
             block.identifyer = "SmallGatlingGun"
             for tag in element:
                 if tag.tag == "Min":
-                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                    block.x = tag.attrib["x"]
+                    block.y = tag.attrib["y"]
+                    block.z = tag.attrib["z"]
                 elif tag.tag == "EntityId":
                     block.set_entity_id(tag.text)  
             return block
@@ -133,7 +126,9 @@ def create_block_from_xml(element):
             block.identifyer = "LargeMissileTurret"
             for tag in element:
                 if tag.tag == "Min":
-                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                    block.x = tag.attrib["x"]
+                    block.y = tag.attrib["y"]
+                    block.z = tag.attrib["z"]
                 elif tag.tag == "EntityId":
                     block.set_entity_id(tag.text)  
             return block
@@ -143,7 +138,9 @@ def create_block_from_xml(element):
                 if tag.tag == "SubtypeName":
                     block.identifyer = tag.text
                 elif tag.tag == "Min":
-                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                    block.x = tag.attrib["x"]
+                    block.y = tag.attrib["y"]
+                    block.z = tag.attrib["z"]
                 elif tag.tag == "EntityId":
                     block.set_entity_id(tag.text)  
             return block
@@ -154,14 +151,18 @@ def create_block_from_xml(element):
                     print("Setting unknown type block ident to: ", tag.text, tag.attrib)
                     block.set_identifyer(tag.text)
                 elif tag.tag == "Min":
-                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+		    block.x = tag.attrib["x"]
+		    block.y = tag.attrib["y"]
+		    block.z = tag.attrib["z"]
                 elif tag.tag == "EntityId":
                     block.set_entity_id(tag.text)
             return block
     except:
         if "Armor" in element[0].text:
             block.identifyer = element[0].text
-            block.set_position(element[1].attrib["x"], element[1].attrib["y"], element[1].attrib["z"])
+            block.x = element[1].attrib["x"]
+            block.y = element[1].attrib["y"]
+            block.z = element[1].attrib["z"]
             return block
         else:
             print("Except and NOT armor!", element[0].text)
@@ -169,5 +170,7 @@ def create_block_from_xml(element):
                 if tag.tag == "SubtypeName":
                     block.set_identifyer(tag.text)
                 elif tag.tag == "Min":
-                    block.set_position(tag.attrib["x"], tag.attrib["y"], tag.attrib["z"])
+                    block.x = tag.attrib["x"]
+                    block.y = tag.attrib["y"]
+                    block.z = tag.attrib["z"]
             return block
